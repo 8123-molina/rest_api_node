@@ -10,4 +10,18 @@ app.use(morgan('dev'));
 app.use('/card', rotaCard);
 app.use('/categoria', rotaCategoria);
 
+app.use((req, res, next) => {
+    const erro = new Error('Não encontrado, solicitação inexistente');
+    erro.status = 404;
+    next(erro);
+});
+
+app.use((error, req, res, next) => {
+    res.status(error.status || 500);
+    return res.send({
+        error: {
+            mensagem: error.message
+        }
+    })
+})
 module.exports = app;
